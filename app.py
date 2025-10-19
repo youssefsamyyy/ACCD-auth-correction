@@ -6,13 +6,13 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# ✅ Cloud SQL connection configuration
+# ✅ Cloud SQL SQL Server connection config
 DB_CONFIG = {
     "driver": "{ODBC Driver 18 for SQL Server}",
-    "server": "/cloudsql/accd-452911:us-central1:accd-auth",  # Cloud SQL instance connection name
+    "server": "34.60.155.124,1433",  # Public IP of your Cloud SQL SQL Server instance
     "database": "auth_system",
-    "user": "sqlserver",  # the SQL Server user you created
-    "password": "Cloud@2025"  # replace with your actual Cloud SQL password
+    "user": "sqlserver",             # your SQL Server username
+    "password": "Cloud@2025"         # your SQL Server password
 }
 
 def get_db_connection():
@@ -26,12 +26,12 @@ def get_db_connection():
             "Encrypt=yes;"
             "TrustServerCertificate=yes;"
         )
-        conn = pyodbc.connect(conn_str)
+        conn = pyodbc.connect(conn_str, timeout=5)
+        print("✅ Database connection successful!")
         return conn
     except Exception as e:
         print(f"❌ Database connection error: {e}")
         return None
-
 
 # ==========================
 # 🧱 Database Initialization
