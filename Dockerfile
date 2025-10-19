@@ -1,7 +1,10 @@
 # Use an official lightweight Python image
 FROM python:3.11-slim
 
-# Install dependencies for pyodbc and SQL Server driver
+# Prevent interactive prompts during apt installs
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies and Microsoft ODBC Driver 18 for SQL Server
 RUN apt-get update && apt-get install -y \
     curl gnupg2 apt-transport-https unixodbc unixodbc-dev \
     && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
@@ -12,14 +15,20 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy project files
-COPY . .
+# Copy only dependency files first for better caching
+COPY requirements.txt ./
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port for Cloud Run
+# Copy the rest of the project
+COPY . .
+
+# Expose the default port for Cloud Run
 ENV PORT=8080
 
-# Start Flask app using Gunicorn
-CMD exec gunicorn --bind :$PORT --workers 2 --threads 4 app:app
+# Optional: Disable Flask debug mode in production
+ENV FLASK_ENV=production
+
+# Run Gunicorn (recommended for production)
+CMD exec gunicorn --bind :$PORT --workers 2 --threads 4 --timeout 0 app:app
