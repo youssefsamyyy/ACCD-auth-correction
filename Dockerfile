@@ -28,6 +28,7 @@ COPY . .
 # Expose Cloud Run port
 ENV PORT=8080
 ENV FLASK_ENV=production
+ENV PYODBC_DEBUG=1
 
 # Start Flask app using Gunicorn
 CMD exec gunicorn --bind :$PORT --workers 2 --threads 4 --timeout 0 app:app

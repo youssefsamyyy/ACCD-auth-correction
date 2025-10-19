@@ -9,10 +9,10 @@ app = Flask(__name__)
 # ✅ Cloud SQL SQL Server connection config
 DB_CONFIG = {
     "driver": "{ODBC Driver 18 for SQL Server}",
-    "server": "34.60.155.124,1433",  # Public IP of your Cloud SQL SQL Server instance
+    "server": "34.60.155.124,1433",  # 👈 استخدم الـ Public IP مباشرة مع المنفذ
     "database": "auth_system",
-    "user": "sqlserver",             # your SQL Server username
-    "password": "Cloud@2025"         # your SQL Server password
+    "user": "sqlserver",
+    "password": "Cloud@2025"
 }
 
 def get_db_connection():
