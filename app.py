@@ -6,11 +6,13 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# ✅ Database Configuration
+# ✅ Cloud SQL Configuration
 DB_CONFIG = {
-    'server': '.',
-    'database': 'auth_system',  # Your existing DB
-    'driver': '{ODBC Driver 18 for SQL Server}'  # Confirmed installed
+    'server': '34.60.155.124',  # Public IP of your Cloud SQL instance
+    'database': 'auth_system',  # The DB you created
+    'username': 'sqlserver',    # Cloud SQL SQL Server user
+    'password': 'Cloud@2025',  # Replace with actual password
+    'driver': '{ODBC Driver 17 for SQL Server}'  # Use 17 for better compatibility
 }
 
 # ==========================
@@ -21,9 +23,10 @@ def get_db_connection():
     try:
         conn_str = (
             f"DRIVER={DB_CONFIG['driver']};"
-            f"SERVER={DB_CONFIG['server']};"
+            f"SERVER={DB_CONFIG['server']},1433;"  # Include default SQL port
             f"DATABASE={DB_CONFIG['database']};"
-            "Trusted_Connection=yes;"
+            f"UID={DB_CONFIG['username']};"
+            f"PWD={DB_CONFIG['password']};"
             "Encrypt=no;"
         )
         conn = pyodbc.connect(conn_str)
